@@ -35,7 +35,7 @@ class TestPlace(unittest.TestCase):
         self.assertTrue(hasattr(self.place, "price_by_night"))
         self.assertTrue(hasattr(self.place, "latitude"))
         self.assertTrue(hasattr(self.place, "longitude"))
-        self.assertTrue(hasattr(self.place, "amenities"))
+        self.assertTrue(hasattr(self.place, "amenity_ids"))
         self.assertEqual(self.place.city_id, "")
         self.assertEqual(self.place.user_id, "")
         self.assertEqual(self.place.name, "")
@@ -46,7 +46,7 @@ class TestPlace(unittest.TestCase):
         self.assertEqual(self.place.price_by_night, 0)
         self.assertEqual(self.place.latitude, 0.0)
         self.assertEqual(self.place.longitude, 0.0)
-        self.assertEqual(self.place.amenities, [])
+        self.assertEqual(self.place.amenity_ids, "")
 
     def test_str(self):
         """test that the str method has the correct output"""
