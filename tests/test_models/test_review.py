@@ -1,29 +1,41 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
+"""
+Test Review Classes
+"""
+from datetime import datetime
 from models.review import Review
+from models.base_model import BaseModel
+import pep8
+import unittest
 
 
-class test_review(test_basemodel):
-    """ """
+class Test_ReviewModel(unittest.TestCase):
+    """
+    Test the review class
+    """
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "Review"
-        self.value = Review
+    def setUp(self):
+        self.model = Review()
+        self.model.save()
 
-    def test_place_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.place_id), str)
+    def test_pep8_conformance_place(self):
+        """Test that models/place.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        result = pep8style.check_files(['models/review.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-    def test_user_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.user_id), str)
+    def test_to_dict_values(self):
+        """test that values in dict returned from to_dict are correct"""
+        time = "%Y-%m-%dT%H:%M:%S.%f"
+        rev = Review()
+        new_d = rev.to_dict()
+        self.assertEqual(new_d["__class__"], "Review")
+        self.assertEqual(type(new_d["created_at"]), str)
+        self.assertEqual(type(new_d["updated_at"]), str)
+        self.assertEqual(new_d["created_at"], rev.created_at.strftime(time))
+        self.assertEqual(new_d["updated_at"], rev.updated_at.strftime(time))
 
-    def test_text(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.text), str)
+if __name__ == "__main__":
+    unittest.main()
+
