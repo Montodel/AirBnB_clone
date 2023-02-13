@@ -1,66 +1,50 @@
 #!/usr/bin/python3
-"""file_storage module containing file_storage class """
-import os
+"""This module defines a class to manage file storage for hbnb clone"""
+import json
 
 
 class FileStorage:
-    """
-    FileStorage class: contains methods to serialize objects to JSON
-    and to deserialize JSON files to objects
-    """
+    """This class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
     __objects = {}
 
     def all(self):
-        """
-        Returns __objects dictionary
-        """
-        return type(self).__objects
+        """Returns a dictionary of models currently in storage"""
+        return FileStorage.__objects
 
     def new(self, obj):
-        """
-        Sets obj value in __objects dict with key <obj class name>.id
-        """
-        objects_value = obj
-        objects_key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        type(self).__objects[objects_key] = objects_value
+        """Adds new object to storage dictionary"""
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
-        """
-        Serializes __objects dict to JSON.
-        Writes File to __file_path.
-        """
-        from json import dump as jdu
-        from models.base_model import BaseModel
-
-        dict_to_serial = type(self).__objects.copy()
-        with open(type(self).__file_path, "w+") as File:
-            for key, value in dict_to_serial.items():
-                value_as_dict = value.to_dict()
-                dict_to_serial[key] = value_as_dict
-            jdu(dict_to_serial, File)
+        """Saves storage dictionary to file"""
+        with open(FileStorage.__file_path, 'w') as f:
+            temp = {}
+            temp.update(FileStorage.__objects)
+            for key, val in temp.items():
+                temp[key] = val.to_dict()
+            json.dump(temp, f)
 
     def reload(self):
-        """
-        If the JSON file exists, deserializes it.
-        Opens file in read-only mode.
-        Converts the string reps back to objects.
-        """
-        from json import load as jlo
+        """Loads storage dictionary from file"""
         from models.base_model import BaseModel
-        from models.amenity import Amenity
-        from models.city import City
-        from models.place import Place
-        from models.review import Review
-        from models.state import State
         from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
 
-        new_dict = {}
-        cl = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
-              "Place": Place, "Review": Review, "State": State, "User": User}
-        if os.path.isfile(type(self).__file_path) is True:
-            with open(type(self).__file_path, 'r') as File:
-                nd = jlo(File)
-            for key in nd:
-                type(self).__objects[key] = cl[nd[key]["__class__"]](**nd[key])
-
+        classes = {
+                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                    'State': State, 'City': City, 'Amenity': Amenity,
+                    'Review': Review
+                  }
+        try:
+            temp = {}
+            with open(FileStorage.__file_path, 'r') as f:
+                temp = json.load(f)
+                for key, val in temp.items():
+                        self.all()[key] = classes[val['__class__']](**val)
+        except FileNotFoundError:
+            pass
