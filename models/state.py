@@ -1,18 +1,10 @@
 #!/usr/bin/python3
-"""
-State package for the AirBnB
+"""This module creates a User class"""
 
-"""
-from .base_model import BaseModel
+from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """
-    State class - state of location
-
-    Class Attributes:
-        name (str): name of the state
-
-    """
+    """Class for managing state objects"""
 
     name = ""

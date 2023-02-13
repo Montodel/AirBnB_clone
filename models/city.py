@@ -1,20 +1,11 @@
 #!/usr/bin/python3
-"""
-City package for the AirBnB
+"""This module creates a User class"""
 
-"""
-from .base_model import BaseModel
+from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    """
-    City class - city of location
-
-    Class Attributes:
-        state_id (str): the id of the state
-        name: name of the city
-
-    """
+    """Class for managing city objects"""
 
     state_id = ""
     name = ""
